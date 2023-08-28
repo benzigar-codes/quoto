@@ -28,7 +28,7 @@ function App() {
 
   React.useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      //  Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
 
     return unsubscribe;
@@ -36,7 +36,7 @@ function App() {
 
   React.useEffect(() => {
     enableAnalytics();
-
+    getToken();
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     );

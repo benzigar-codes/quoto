@@ -1,5 +1,7 @@
 # Quoto App
 
+![Quoto Banner](./banner.jpeg)
+
 Welcome to the Quoto app repository! Quoto is a mobile application focused on creating positive and amazing quotes. With Quoto, users can easily create quotes using templates or their own creative ideas. The app is built using React Native, providing a smooth and intuitive user experience.
 
 ## Features

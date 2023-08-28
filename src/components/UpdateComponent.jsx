@@ -1,13 +1,15 @@
 import {View, Text, Modal, TouchableOpacity, Linking} from 'react-native';
-import React from 'react';
+import React, {version} from 'react';
 import remoteConfig from '@react-native-firebase/remote-config';
 import DeviceInfo from 'react-native-device-info';
-import {compareVersions} from './src/utils/utils';
+import {compareVersions} from '../utils/utils';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {TEMPLATES} from '../utils/templates';
 
 export default function UpdateComponent() {
   const [update, setUpdate] = React.useState('NO_UPDATE');
+  const [updateVersion, setUpdateVersion] = React.useState('');
 
   const checkUpdate = async () => {
     const code = await DeviceInfo.getVersion();
@@ -15,6 +17,7 @@ export default function UpdateComponent() {
 
     const current = code;
     const target = version.asString();
+    setUpdateVersion(target);
 
     setUpdate(compareVersions(current, target));
   };
@@ -27,6 +30,7 @@ export default function UpdateComponent() {
     remoteConfig()
       .setDefaults({
         android_version: '1.0.0',
+        templates: TEMPLATES,
       })
       .then(() => remoteConfig().fetchAndActivate())
       .then(data => {
@@ -59,7 +63,7 @@ export default function UpdateComponent() {
               <Icon color="white" name="update" size={50} />
               <Text
                 className={`text-xl font-bold mt-4 text-center text-white mb-2`}>
-                Update Available
+                Update Available - {updateVersion}
               </Text>
               <Text
                 className={`text-xs text-center opacity-75 text-white mb-5`}>
@@ -79,7 +83,7 @@ export default function UpdateComponent() {
               <Icon color="white" name="download" size={20} />
               <Text
                 className={`flex-1 text-center ml-2 text-md font-bold text-white`}>
-                Download
+                Update Now
               </Text>
               <View className={`opacity-0`}>
                 <Icon color="white" name="dice-3-outline" size={20} />

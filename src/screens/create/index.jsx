@@ -116,7 +116,9 @@ export default function Home({route, navigation}) {
   const [quotes, setQuotes] = useMMKVStorage(MY_FILES, storage, []);
   const [activeEditor, setActiveEditor] = React.useState(false);
   const [data, setData] = React.useState(
-    route?.params?.item ? route?.params?.item : defaultValue,
+    route?.params?.item
+      ? {...defaultValue, ...route?.params?.item}
+      : defaultValue,
   );
   const [watermark, setWatermark] = React.useState(true);
   const [watermarkPicker, setWatermarkPicker] = React.useState(false);
@@ -241,7 +243,7 @@ export default function Home({route, navigation}) {
   const undo = () => {
     if (history[history.length - 2]) {
       const newHistory = history.pop();
-      alert(JSON.stringify(history[history.length - 2]));
+      // alert(JSON.stringify(history[history.length - 2]));
       setData({
         ...data,
         ...history[history.length - 2],
@@ -276,7 +278,7 @@ export default function Home({route, navigation}) {
             className={`mr-1`}>
             <Icon size={25} color="white" name="undo" />
           </TouchableOpacity> */}
-          <TouchableOpacity>
+          <TouchableOpacity onPress={save}>
             <Icon size={25} color="#97FFF4" name="share" />
           </TouchableOpacity>
         </TouchableOpacity>

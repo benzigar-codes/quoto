@@ -7,8 +7,10 @@ import {
   Dimensions,
   Alert,
   Modal,
+  Image,
 } from 'react-native';
 import React from 'react';
+import LottieView from 'lottie-react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,6 +19,7 @@ import storage, {MY_FILES} from '../../utils/storage';
 import RenderQuotes from '../../components/RenderQuote';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import CustomTabBar from '../../components/TabBar';
+import messaging from '@react-native-firebase/messaging';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Templates from '../temp';
 import Settings from '../settings';
@@ -43,10 +46,11 @@ const Tab = createBottomTabNavigator();
 const Recent = ({navigation}) => {
   const [showPicker, setPicker] = React.useState(false);
   const [quotes, setQuotes] = useMMKVStorage(MY_FILES, storage, []);
+  const lottieRef = React.useRef(null);
 
-  // React.useEffect(() => {
-  //   if (quotes?.length === 0) setPicker(true);
-  // }, [quotes]);
+  React.useEffect(() => {
+    if (quotes?.length === 0) setPicker(true);
+  }, []);
 
   const handleLongPress = id => {
     Alert.alert(
@@ -68,6 +72,10 @@ const Recent = ({navigation}) => {
       {cancelable: true},
     );
   };
+
+  React.useEffect(() => {
+    lottieRef.current?.play();
+  }, []);
 
   return (
     <View className={`bg-black pt-3 flex-1`}>
@@ -91,7 +99,14 @@ const Recent = ({navigation}) => {
           />
           <View className={`p-5 px-3 m-5 bg-zinc-800 rounded-lg`}>
             <View className={`flex justify-center items-center`}>
-              <Icon color="white" name="sparkles" size={50} />
+              {/* <Icon color="white" name="sparkles" size={50} /> */}
+              <LottieView
+                style={{height: 100, width: 100}}
+                ref={lottieRef}
+                autoPlay
+                loop
+                source={require('../../json/spark.json')}
+              />
               <Text
                 className={`text-xl font-bold mt-4 text-center text-white mb-2`}>
                 Make Quoto
@@ -198,6 +213,31 @@ const Recent = ({navigation}) => {
 };
 
 export default function Home({navigation}) {
+  React.useEffect(() => {
+    const handleNotificationClick = async notification => {
+      if (notification.data?.item) {
+        navigation.navigate('Create', {
+          item: JSON.parse(notification.data?.item),
+          random: true,
+        });
+      }
+    };
+
+    const unsubscribe = messaging().onNotificationOpenedApp(
+      handleNotificationClick,
+    );
+
+    messaging()
+      .getInitialNotification()
+      .then(notification => {
+        if (notification) {
+          handleNotificationClick(notification);
+        }
+      });
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <View className={`bg-black flex-1`}>
       <View
