@@ -1,4 +1,4 @@
-package com.quote_maker;
+package com.tfcode.quoto;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

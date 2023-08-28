@@ -1,4 +1,4 @@
-package com.quote_maker;
+package com.tfcode.quoto;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

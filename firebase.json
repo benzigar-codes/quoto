@@ -1,0 +1,6 @@
+{
+  "react-native": {
+    "analytics_auto_collection_enabled": false,
+    "messaging_android_notification_channel_id": "high-priority"
+  }
+}

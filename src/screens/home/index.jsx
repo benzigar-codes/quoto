@@ -40,9 +40,9 @@ const Recent = ({navigation}) => {
   const [showPicker, setPicker] = React.useState(false);
   const [quotes, setQuotes] = useMMKVStorage(MY_FILES, storage, []);
 
-  React.useEffect(() => {
-    if (quotes?.length === 0) setPicker(true);
-  }, [quotes]);
+  // React.useEffect(() => {
+  //   if (quotes?.length === 0) setPicker(true);
+  // }, [quotes]);
 
   const handleLongPress = id => {
     Alert.alert(

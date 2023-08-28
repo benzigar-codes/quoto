@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services'
 apply plugin: "com.facebook.react"
 
 /**
@@ -73,9 +74,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.quote_maker"
+    namespace "com.tfcode.quoto"
     defaultConfig {
-        applicationId "com.quote_maker"
+        applicationId "com.tfcode.quoto"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
