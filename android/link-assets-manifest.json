@@ -1,0 +1,29 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/BEBAS.ttf",
+      "sha1": "8b3aaeb978f3cb5f575860774b50c332338563c1"
+    },
+    {
+      "path": "assets/fonts/DANCING.ttf",
+      "sha1": "30711d9cdbed046fef8128082c6cc1a9287dbc7c"
+    },
+    {
+      "path": "assets/fonts/OSWALD.ttf",
+      "sha1": "6e78c90d65a6133d979daebc1255d2f560a97c79"
+    },
+    {
+      "path": "assets/fonts/PLAYFAIR.ttf",
+      "sha1": "833c2b70c742b12b1be9461480c8853ddb663991"
+    },
+    {
+      "path": "assets/fonts/QUICKSAND.ttf",
+      "sha1": "48d202c7a215914264064dc27f6a8cd77ebe3036"
+    },
+    {
+      "path": "assets/fonts/VIBES.ttf",
+      "sha1": "4dd3bad8fb151d31eedee2676488f94f831bf515"
+    }
+  ]
+}
