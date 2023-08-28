@@ -89,7 +89,11 @@ const Recent = ({navigation}) => {
             <View className={`flex justify-center items-center`}>
               <Icon color="white" name="sparkles" size={50} />
               <Text
-                className={`mt-4 text-xs text-center opacity-75 text-white mb-5`}>
+                className={`text-xl font-bold mt-4 text-center text-white mb-2`}>
+                Make Quoto
+              </Text>
+              <Text
+                className={`text-xs text-center opacity-75 text-white mb-5`}>
                 You can create a quote by one of the following, you can later
                 edit the quote and can share in social media.
               </Text>
@@ -165,7 +169,7 @@ const Recent = ({navigation}) => {
         </>
       ) : (
         <View className={`flex flex-1 justify-center items-center`}>
-          <IconMaterial color="white" name="format-quote-close" size={60} />
+          <IconMaterial color="white" name="format-quote-close" size={80} />
           <Text className={`text-white font-bold text-lg`}>
             No Quotes created yet
           </Text>

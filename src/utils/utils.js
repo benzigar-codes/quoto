@@ -185,5 +185,4 @@ export const getRandomColors = () =>
 export const SETTINGS = {
   showWatermark: true,
   openAppInCreateMode: false,
-  showNotifications: true,
 };

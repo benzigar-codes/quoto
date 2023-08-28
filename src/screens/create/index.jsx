@@ -8,7 +8,9 @@ import {
   Image,
   FlatList,
   BackHandler,
+  Modal,
 } from 'react-native';
+import {Switch} from 'react-native-switch';
 import React from 'react';
 import ViewShot from 'react-native-view-shot';
 import RNFS from 'react-native-fs';
@@ -116,6 +118,8 @@ export default function Home({route, navigation}) {
   const [data, setData] = React.useState(
     route?.params?.item ? route?.params?.item : defaultValue,
   );
+  const [watermark, setWatermark] = React.useState(true);
+  const [watermarkPicker, setWatermarkPicker] = React.useState(false);
 
   const [history, setHistory] = React.useState([data]);
 
@@ -261,7 +265,9 @@ export default function Home({route, navigation}) {
             <Icon color="white" name="format-quote-close" size={40} />
           </TouchableOpacity>
         </View>
-        <View className={`py-2 flex-1 flex-row justify-end items-center`}>
+        <TouchableOpacity
+          onPress={save}
+          className={`py-2 flex-1 flex-row justify-end items-center`}>
           {/* <TouchableOpacity
             style={{
               opacity: history?.length > 1 ? 1 : 0.5,
@@ -270,11 +276,81 @@ export default function Home({route, navigation}) {
             className={`mr-1`}>
             <Icon size={25} color="white" name="undo" />
           </TouchableOpacity> */}
-          <TouchableOpacity onPress={save}>
-            <Icon size={25} color="#97FFF4" name="content-save" />
+          <TouchableOpacity>
+            <Icon size={25} color="#97FFF4" name="share" />
           </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       </View>
+      <Modal
+        onDismiss={() => {
+          setPicker(false);
+        }}
+        animationType="slide"
+        visible={watermarkPicker}
+        transparent>
+        <View
+          className={`flex-1`}
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              setPicker(false);
+            }}
+            className={`flex-1`}
+          />
+          <View className={`p-5 px-3 m-5 bg-zinc-800 rounded-lg`}>
+            <View className={`flex justify-center items-center`}>
+              <Icon color="white" name="watermark" size={50} />
+              <Text
+                className={`mt-4 text-center text-white font-bold text-2xl mb-5`}>
+                Watermark
+              </Text>
+              <Text
+                className={`text-xs text-center opacity-75 text-white mb-5`}>
+                Watermarks help us reach more audience to install Quoto. Place
+                remove watermark only if you have no other option.
+              </Text>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => {
+                setWatermark(!watermark);
+              }}
+              className={`rounded-full justify-between items-center flex-row py-1 px-2`}>
+              <View className={`flex flex-row items-center`}>
+                <Text className={`text-center text-md font-bold text-white`}>
+                  Show Watermark
+                </Text>
+              </View>
+              <Icon
+                style={{
+                  opacity: watermark ? 1 : 0.4,
+                }}
+                color="white"
+                name={watermark ? 'toggle-switch' : 'toggle-switch-off'}
+                size={40}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setWatermarkPicker(false);
+              }}
+              className={`mt-2 bg-black rounded-full items-center flex-row py-3 px-4`}>
+              <View className={`opacity-0`}>
+                <Icon color="white" name="file" size={20} />
+              </View>
+              <Text
+                className={`flex-1 text-center ml-2 text-md font-bold text-white`}>
+                Done
+              </Text>
+              <View className={`opacity-0`}>
+                <Icon color="white" name="file" size={20} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <ScrollView
         keyboardShouldPersistTaps="always"
         contentContainerStyle={{
@@ -296,7 +372,13 @@ export default function Home({route, navigation}) {
                   : 'flex-start',
               aspectRatio: data.ratio,
             }}>
-            <RenderLogo />
+            {watermark ? (
+              <RenderLogo
+                onPress={() => {
+                  setWatermarkPicker(true);
+                }}
+              />
+            ) : null}
             {data?.backgroundImage ? (
               <>
                 <Image
