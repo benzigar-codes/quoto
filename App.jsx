@@ -11,6 +11,7 @@ import Create from './src/screens/create';
 import Settings from './src/screens/settings';
 
 import {PermissionsAndroid} from 'react-native';
+import UpdateComponent from './src/components/UpdateComponent';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,24 +36,27 @@ function App() {
 
   React.useEffect(() => {
     enableAnalytics();
-    // getToken();
+
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     );
   }, []);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          animation: 'fade_from_bottom',
-          headerShown: false,
-        }}>
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Create" component={Create} />
-        <Stack.Screen name="Settings" component={Settings} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <UpdateComponent />
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            animation: 'fade_from_bottom',
+            headerShown: false,
+          }}>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Create" component={Create} />
+          <Stack.Screen name="Settings" component={Settings} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
 

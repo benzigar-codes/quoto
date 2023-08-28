@@ -17,7 +17,9 @@ import storage, {MY_FILES} from '../../utils/storage';
 import RenderQuotes from '../../components/RenderQuote';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import CustomTabBar from '../../components/TabBar';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Templates from '../temp';
+import Settings from '../settings';
 
 // {
 //   "id" : "aljsdlfjskldjf",
@@ -34,7 +36,9 @@ import Templates from '../temp';
 //   "logoUrl" : ""
 // }
 
-const Tab = createMaterialTopTabNavigator();
+// const Tab = createMaterialTopTabNavigator();
+
+const Tab = createBottomTabNavigator();
 
 const Recent = ({navigation}) => {
   const [showPicker, setPicker] = React.useState(false);
@@ -179,12 +183,12 @@ const Recent = ({navigation}) => {
         </View>
       )}
       <View
-        className={`absolute bottom-0 left-0 right-0 justify-center items-center`}>
+        className={`absolute bottom-0 left-0 right-0 justify-center items-end`}>
         <TouchableOpacity
           onPress={() => {
             setPicker(true);
           }}
-          className={`bg-white flex-row items-center px-5 py-2 rounded-full mb-5`}>
+          className={`bg-white flex-row items-center px-5 py-2 rounded-full mb-5 mr-5`}>
           <Text className={`text-black mr-1 font-bold text-md`}>Create</Text>
           <Icon color="black" size={15} name="sparkles" />
         </TouchableOpacity>
@@ -197,25 +201,27 @@ export default function Home({navigation}) {
   return (
     <View className={`bg-black flex-1`}>
       <View
-        className={`bg-zinc-900 py-2 px-4 flex-row justify-between items-center`}>
+        className={`bg-black py-2 px-4 flex-row justify-between items-center`}>
         <View className={`flex flex-row items-center`}>
           <IconMaterial color="white" name="format-quote-close" size={40} />
           <Text className={`text-white font-bold text-lg`}>Quoto</Text>
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => {
             navigation.navigate('Settings');
           }}>
           <IconMaterial color="white" name="cog" size={25} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <Tab.Navigator
         screenOptions={{
+          headerShown: false,
           swipeEnabled: false,
         }}
         tabBar={props => <CustomTabBar {...props} />}>
-        <Tab.Screen name="Recent" component={Recent} />
+        <Tab.Screen name="My Quotos" component={Recent} />
         <Tab.Screen name="Templates" component={Templates} />
+        <Tab.Screen name="Settings" component={Settings} />
         {/* <Tab.Screen name="Settings" component={SettingsScreen} /> */}
       </Tab.Navigator>
     </View>

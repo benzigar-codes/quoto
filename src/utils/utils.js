@@ -1,3 +1,5 @@
+import semver from 'semver';
+
 export const BACKGROUNDS = [
   '',
   'https://i.pinimg.com/564x/f1/64/6c/f1646c3d27806a00815adff8b548cecc.jpg',
@@ -185,4 +187,23 @@ export const getRandomColors = () =>
 export const SETTINGS = {
   showWatermark: true,
   openAppInCreateMode: false,
+};
+
+export const compareVersions = (versionA, versionB) => {
+  const parsedVersionA = semver.parse(versionA);
+  const parsedVersionB = semver.parse(versionB);
+  if (!parsedVersionA || !parsedVersionB) {
+    return 'NO_UPDATE';
+  }
+
+  if (
+    parsedVersionA.major === parsedVersionB.major &&
+    parsedVersionA.minor === parsedVersionB.minor
+  )
+    return 'NO_UPDATE';
+
+  if (parsedVersionB.major > parsedVersionA.major) return 'FORCE_UPDATE';
+  if (parsedVersionB.minor > parsedVersionA.minor) return 'UPDATE';
+
+  return 'NO_UPDATE';
 };

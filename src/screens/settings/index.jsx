@@ -39,7 +39,7 @@ export default function Settings({navigation}) {
 
   return (
     <View className={`bg-black flex-1`}>
-      <View className={`bg-zinc-900 px-4 flex-row items-center`}>
+      {/* <View className={`bg-zinc-900 px-4 flex-row items-center`}>
         <TouchableOpacity
           className={`flex-1 py-2 `}
           onPress={() => {
@@ -56,9 +56,9 @@ export default function Settings({navigation}) {
           className={`opacity-0 flex-1 py-2 flex-row justify-end`}>
           <Icon size={25} color="#97FFF4" name="content-save" />
         </TouchableOpacity>
-      </View>
+      </View> */}
       <ScrollView className={`mx-3`}>
-        <Text className={`mt-4 text-white font-bold text-3xl`}>Settings</Text>
+        <Text className={`mt-2 text-white font-bold text-3xl`}>Settings</Text>
         <TouchableOpacity
           onPress={clearAllRecentData}
           className={`mt-3 flex items-center flex-row justify-between`}>
@@ -85,7 +85,9 @@ export default function Settings({navigation}) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            Linking.openURL('mailto:24code.apps@gmail.com');
+            Linking.openURL(
+              'https://play.google.com/store/apps/details?id=com.tfcode.quoto',
+            );
           }}
           className={`mt-3 flex items-center flex-row justify-between`}>
           <View className={`flex flex-row items-center`}>

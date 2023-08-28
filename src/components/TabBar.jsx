@@ -1,13 +1,15 @@
-import {Animated, View, TouchableOpacity, Text} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+} from 'react-native';
 
-export default function CustomTabBar({
-  state,
-  descriptors,
-  navigation,
-  position,
-}) {
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+function MyTabBar({state, descriptors, navigation}) {
   return (
-    <View className={`flex-row items-center mx-3`}>
+    <View style={{flexDirection: 'row'}}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const label =
@@ -39,31 +41,47 @@ export default function CustomTabBar({
           });
         };
 
-        const inputRange = state.routes.map((_, i) => i);
-
-        const opacity = position.interpolate({
-          inputRange,
-          outputRange: inputRange.map(i => (i === index ? 1 : 0)),
-        });
-
         return (
-          <TouchableOpacity
+          <TouchableNativeFeedback
             accessibilityRole="button"
             accessibilityState={isFocused ? {selected: true} : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}>
-            <Text
-              className={`text-white font-bold px-2 mt-3 border-b-4 pb-2`}
+            <View
+              className={`bg-zinc-900 justify-center items-center flex-1 px-2 py-2 border-t-2`}
               style={{
                 borderColor: isFocused ? 'white' : 'black',
               }}>
-              {label}
-            </Text>
-          </TouchableOpacity>
+              <Icon
+                style={{
+                  opacity: isFocused ? 1 : 0.5,
+                }}
+                color={'white'}
+                size={25}
+                name={
+                  label === 'My Quotos'
+                    ? 'file'
+                    : label === 'Settings'
+                    ? 'cog'
+                    : 'dots-grid'
+                }
+              />
+              <Text
+                className={`mt-1 text-center text-white`}
+                style={{
+                  opacity: isFocused ? 1 : 0.5,
+                  fontSize: 10,
+                }}>
+                {label}
+              </Text>
+            </View>
+          </TouchableNativeFeedback>
         );
       })}
     </View>
   );
 }
+
+export default MyTabBar;
