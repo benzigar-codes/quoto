@@ -77,7 +77,7 @@ const Recent = ({navigation}) => {
         <View
           className={`flex-1`}
           style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
           }}>
           <TouchableOpacity
             onPress={() => {
