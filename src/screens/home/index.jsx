@@ -97,7 +97,7 @@ const Recent = ({navigation}) => {
             }}
             className={`flex-1`}
           />
-          <View className={`p-5 px-3 m-5 bg-zinc-800 rounded-lg`}>
+          <View className={`p-5 px-3 m-5 bg-zinc-900 rounded-lg`}>
             <View className={`flex justify-center items-center`}>
               {/* <Icon color="white" name="sparkles" size={50} /> */}
               <LottieView
