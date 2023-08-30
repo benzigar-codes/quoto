@@ -41,7 +41,7 @@ export default function UpdateComponent() {
   return (
     <>
       <Modal
-        onDismiss={() => {
+        onRequestClose={() => {
           setUpdate('NO_UPDATE');
         }}
         animationType="slide"
@@ -103,7 +103,7 @@ export default function UpdateComponent() {
         </View>
       </Modal>
       <Modal
-        onDismiss={() => {
+        onRequestClose={() => {
           // setUpdate('FORCE_UPDATE');
         }}
         animationType="slide"

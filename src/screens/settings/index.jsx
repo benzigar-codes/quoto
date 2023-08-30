@@ -67,7 +67,7 @@ export default function Settings({navigation}) {
   return (
     <View className={`bg-black flex-1`}>
       <Modal
-        onDismiss={() => {
+        onRequestClose={() => {
           setAuthorPicker(false);
         }}
         animationType="slide"
@@ -323,15 +323,15 @@ export default function Settings({navigation}) {
           </View>
           <Icon size={25} color={'white'} name="chevron-right" />
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            Linking.openURL('https://www.linkedin.com/company/24code-in');
-          }}>
-          <Text className={`text-white text-center text-sm mb-2 font-bold`}>
-            Made with ❤️ by 24code.in
-          </Text>
-        </TouchableOpacity>
       </ScrollView>
+      <TouchableOpacity
+        onPress={() => {
+          Linking.openURL('https://www.24code.in/');
+        }}>
+        <Text className={`text-white text-center text-sm mb-2 font-bold`}>
+          Made with ❤️ by 24code.in
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }

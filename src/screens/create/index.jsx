@@ -315,8 +315,8 @@ export default function Home({route, navigation}) {
         </TouchableOpacity>
       </View>
       <Modal
-        onDismiss={() => {
-          setWatermark(!watermark);
+        onRequestClose={() => {
+          setWatermarkPicker(false);
         }}
         animationType="slide"
         visible={watermarkPicker}
@@ -328,7 +328,7 @@ export default function Home({route, navigation}) {
           }}>
           <TouchableOpacity
             onPress={() => {
-              setWatermark(!watermark);
+              setWatermarkPicker(false);
             }}
             className={`flex-1`}
           />
@@ -461,6 +461,10 @@ export default function Home({route, navigation}) {
             {data?.authorName ? (
               <TouchableOpacity
                 onPress={() => {
+                  setAuthorDetails({
+                    authorImage: data?.authorImage,
+                    authorName: data?.authorName,
+                  });
                   setActiveEditor('AUTHOR');
                 }}
                 className={`mt-2 flex-row items-center`}>
@@ -717,7 +721,7 @@ export default function Home({route, navigation}) {
           </View>
         ) : null}
         <Modal
-          onDismiss={() => {
+          onRequestClose={() => {
             setActiveEditor(false);
           }}
           animationType="slide"

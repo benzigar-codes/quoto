@@ -80,7 +80,7 @@ const Recent = ({navigation}) => {
   return (
     <View className={`bg-black pt-3 flex-1`}>
       <Modal
-        onDismiss={() => {
+        onRequestClose={() => {
           setPicker(false);
         }}
         animationType="slide"
