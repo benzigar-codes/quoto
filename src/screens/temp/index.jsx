@@ -1,4 +1,11 @@
-import {View, Text, FlatList, Dimensions, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Dimensions,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import React from 'react';
 import remoteConfig from '@react-native-firebase/remote-config';
 
@@ -41,6 +48,7 @@ export default function Templates({navigation}) {
                       onPress={() => {
                         navigation.navigate('Create', {
                           item: item,
+                          random: true,
                         });
                       }}
                       style={{

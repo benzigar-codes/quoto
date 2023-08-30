@@ -6,15 +6,29 @@ import {
   Touchable,
   Alert,
   Linking,
+  Modal,
+  TextInput,
+  Image,
 } from 'react-native';
 import React from 'react';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useMMKVStorage} from 'react-native-mmkv-storage';
-import storage, {MY_FILES} from '../../utils/storage';
+import storage, {MY_FILES, SETTINGS} from '../../utils/storage';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+
+// {
+//   "authorName" : "Benzigar"
+// }
 
 export default function Settings({navigation}) {
   const [quotes, setQuotes] = useMMKVStorage(MY_FILES, storage, []);
+  const [settings, setSettings] = useMMKVStorage(SETTINGS, storage, []);
+  const [showAuthorPicker, setAuthorPicker] = React.useState(false);
+  const [authorDetails, setAuthorDetails] = React.useState({
+    authorName: '',
+    authorImage: '',
+  });
 
   const clearAllRecentData = () => {
     Alert.alert(
@@ -37,8 +51,127 @@ export default function Settings({navigation}) {
     );
   };
 
+  const loadImage = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+    });
+    if (result && result?.assets?.length > 0 && result?.assets?.[0]?.uri) {
+      const imageUrl = result?.assets?.[0]?.uri;
+      setAuthorDetails({
+        ...authorDetails,
+        authorImage: imageUrl,
+      });
+    }
+  };
+
   return (
     <View className={`bg-black flex-1`}>
+      <Modal
+        onDismiss={() => {
+          setAuthorPicker(false);
+        }}
+        animationType="slide"
+        visible={showAuthorPicker}
+        transparent>
+        <View
+          className={`flex-1`}
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              setAuthorPicker(false);
+            }}
+            className={`flex-1`}
+          />
+          <View className={`p-5 px-3 m-5 bg-zinc-800 rounded-lg`}>
+            <View className={`flex justify-center items-center`}>
+              <Icon color="white" name="pen" size={50} />
+              <Text
+                className={`text-xl font-bold mt-4 text-center text-white mb-2`}>
+                Author Details
+              </Text>
+              <Text
+                className={`text-xs text-center opacity-75 text-white mb-5`}>
+                Tell us the deails of the author and we will add the author
+                details in all the quotes that you export.
+              </Text>
+            </View>
+            <View
+              className={`px-4 py-1 mt-3 font-bold bg-black rounded-full items-center flex-row`}>
+              <TouchableOpacity onPress={loadImage}>
+                {authorDetails.authorImage ? (
+                  <Image
+                    className={`aspect-square rounded-full h-10`}
+                    source={{
+                      uri: authorDetails.authorImage,
+                    }}
+                  />
+                ) : (
+                  <Icon color="white" name="image-edit-outline" size={30} />
+                )}
+              </TouchableOpacity>
+              <TextInput
+                autoFocus
+                onChangeText={e => {
+                  setAuthorDetails({
+                    ...authorDetails,
+                    authorName: e,
+                  });
+                }}
+                value={authorDetails.authorName}
+                className={`py-2 px-2 font-bold flex-1`}
+                placeholder="Author Name"
+              />
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setSettings({
+                  ...settings,
+                  ...authorDetails,
+                });
+                setAuthorPicker(false);
+                setTimeout(() => {
+                  setAuthorDetails({
+                    ...authorDetails,
+                    authorName: '',
+                    authorImage: '',
+                  });
+                }, 100);
+              }}
+              className={`mt-3 bg-black rounded-full items-center flex-row py-3 px-4`}>
+              <Icon color="white" name="check" size={20} />
+              <Text
+                className={`flex-1 text-center ml-2 text-md font-bold text-white`}>
+                Done
+              </Text>
+              <View className={`opacity-0`}>
+                <Icon color="white" name="dice-3-outline" size={20} />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setAuthorDetails({
+                  ...authorDetails,
+                  authorName: '',
+                  authorImage: '',
+                });
+                setAuthorPicker(false);
+                setSettings({
+                  ...settings,
+                  authorName: '',
+                  authorImage: '',
+                });
+              }}
+              className={`mt-4 rounded-full items-center flex-row py- px-4`}>
+              <Text
+                className={`flex-1 text-center ml-2 text-xs font-bold text-white`}>
+                Remove Author
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       {/* <View className={`bg-zinc-900 px-4 flex-row items-center`}>
         <TouchableOpacity
           className={`flex-1 py-2 `}
@@ -67,6 +200,39 @@ export default function Settings({navigation}) {
             <Text className={`ml-1 text-md text-white`}>
               Clear All Recent Data
             </Text>
+          </View>
+          <Icon size={25} color={'white'} name="chevron-right" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setAuthorPicker(true);
+            setAuthorDetails({
+              ...authorDetails,
+              authorName: settings?.authorName ?? '',
+              authorImage: settings?.authorImage ?? '',
+            });
+          }}
+          className={`mt-3 flex items-center flex-row justify-between`}>
+          <View className={`flex flex-row items-center`}>
+            <Icon size={25} color={'white'} name="fountain-pen-tip" />
+            <View className={`ml-1`}>
+              <Text className={`text-md text-white`}>Author</Text>
+              {settings?.authorName ? (
+                <View className={`flex flex-row items-center`}>
+                  {/* {settings?.authorImage ? (
+                    <Image
+                      className={`h-4 rounded-full aspect-square`}
+                      source={{
+                        uri: settings?.authorImage,
+                      }}
+                    />
+                  ) : null} */}
+                  <Text className={`text-xs`}>
+                    {settings?.authorName ?? 'Benzigar'}
+                  </Text>
+                </View>
+              ) : null}
+            </View>
           </View>
           <Icon size={25} color={'white'} name="chevron-right" />
         </TouchableOpacity>
@@ -157,15 +323,15 @@ export default function Settings({navigation}) {
           </View>
           <Icon size={25} color={'white'} name="chevron-right" />
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            Linking.openURL('https://www.linkedin.com/company/24code-in');
+          }}>
+          <Text className={`text-white text-center text-sm mb-2 font-bold`}>
+            Made with ❤️ by 24code.in
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
-      <TouchableOpacity
-        onPress={() => {
-          Linking.openURL('https://www.linkedin.com/company/24code-in');
-        }}>
-        <Text className={`text-white text-center text-sm mb-2 font-bold`}>
-          Made with ❤️ by 24code.in
-        </Text>
-      </TouchableOpacity>
     </View>
   );
 }

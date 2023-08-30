@@ -183,7 +183,7 @@ const Recent = ({navigation}) => {
                 <RenderQuotes width={3} forceSquare={true} data={item} />
               </TouchableOpacity>
             )}
-            data={quotes?.reverse()}
+            data={quotes}
           />
         </>
       ) : (
@@ -203,9 +203,8 @@ const Recent = ({navigation}) => {
           onPress={() => {
             setPicker(true);
           }}
-          className={`bg-white flex-row items-center px-5 py-2 rounded-full mb-5 mr-5`}>
-          <Text className={`text-black mr-1 font-bold text-md`}>Create</Text>
-          <Icon color="black" size={15} name="sparkles" />
+          className={`flex-row bg-black items-center rounded-full mb-5 mr-5`}>
+          <Icon color="white" size={60} name="add-circle-sharp" />
         </TouchableOpacity>
       </View>
     </View>

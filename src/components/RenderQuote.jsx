@@ -45,13 +45,35 @@ export default function RenderQuotes({
           {data?.quote}
         </Text>
       </View>
-      {data?.author ? (
-        <Text
-          style={{
-            color: data?.quoteColor,
-          }}>
-          {'- ' + data?.author}
-        </Text>
+      {forceSquare === false && data?.ratio === 9 / 16 && data?.authorName ? (
+        <View className={`mt-2 flex-row items-center`}>
+          {data?.authorImage ? (
+            <Image
+              style={{
+                width: 50 / width,
+              }}
+              className={`mr-2 aspect-square rounded-full`}
+              source={{
+                uri: data?.authorImage,
+              }}
+            />
+          ) : (
+            <Text
+              style={{
+                color: data?.quoteColor,
+              }}>
+              {'- '}
+            </Text>
+          )}
+          <Text
+            style={{
+              color: data?.quoteColor,
+              fontSize: 25 / width,
+            }}
+            className={`text-sm italic`}>
+            {data?.authorName}
+          </Text>
+        </View>
       ) : null}
     </View>
   );

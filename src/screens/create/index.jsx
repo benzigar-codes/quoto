@@ -16,8 +16,10 @@ import ViewShot from 'react-native-view-shot';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import Slider from 'react-native-slider';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 import {
+  FONT_NAMES,
   generateUniqueID,
   getRandomBackground,
   getRandomColors,
@@ -27,7 +29,7 @@ import {
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useMMKVStorage} from 'react-native-mmkv-storage';
-import storage, {MY_FILES} from '../../utils/storage';
+import storage, {MY_FILES, SETTINGS} from '../../utils/storage';
 import RenderLogo from '../../components/RenderLogo';
 
 const colors = [
@@ -67,32 +69,7 @@ const ratio = [
   {title: '2/3', value: 2 / 3},
 ];
 
-const fonts = [
-  {
-    name: 'Bebas',
-    value: 'BEBAS',
-  },
-  {
-    name: 'Dancing',
-    value: 'DANCING',
-  },
-  {
-    name: 'Oswald',
-    value: 'OSWALD',
-  },
-  {
-    name: 'Playfair',
-    value: 'PLAYFAIR',
-  },
-  {
-    name: 'Quick Sand',
-    value: 'QUICKSAND',
-  },
-  {
-    name: 'Vibes',
-    value: 'VIBES',
-  },
-];
+const fonts = FONT_NAMES;
 
 const defaultValue = {
   quote: '',
@@ -108,11 +85,13 @@ const defaultValue = {
   logoUrl: '',
   ratio: 4 / 5,
   lastUpdated: new Date(),
+  authorName: '',
+  authorImage: '',
 };
 
 export default function Home({route, navigation}) {
   const ref = React.useRef();
-
+  const [settings, setSettings] = useMMKVStorage(SETTINGS, storage, []);
   const [quotes, setQuotes] = useMMKVStorage(MY_FILES, storage, []);
   const [activeEditor, setActiveEditor] = React.useState(false);
   const [data, setData] = React.useState(
@@ -122,6 +101,10 @@ export default function Home({route, navigation}) {
   );
   const [watermark, setWatermark] = React.useState(true);
   const [watermarkPicker, setWatermarkPicker] = React.useState(false);
+  const [authorDetails, setAuthorDetails] = React.useState({
+    authorName: '',
+    authorImage: '',
+  });
 
   const [history, setHistory] = React.useState([data]);
 
@@ -159,6 +142,11 @@ export default function Home({route, navigation}) {
     //   icon: 'alpha-l-circle',
     //   editor: 'LOGO',
     // },
+    {
+      name: 'Author',
+      icon: 'tag',
+      editor: 'AUTHOR',
+    },
     {
       name: 'Ratio',
       icon: 'aspect-ratio',
@@ -198,10 +186,9 @@ export default function Home({route, navigation}) {
   React.useEffect(() => {
     if (data && data?.id) {
       if (quotes?.find(e => e.id === data.id)) {
-        const removedQuotes = quotes.filter(e => e.id !== data.id);
-        setQuotes([...removedQuotes, data]);
+        setQuotes(quotes?.map(each => (each?.id === data?.id ? data : each)));
       } else {
-        setQuotes([...quotes, data]);
+        setQuotes([data, ...quotes]);
       }
     } else {
       const background = getRandomBackground();
@@ -252,6 +239,50 @@ export default function Home({route, navigation}) {
     }
   };
 
+  const loadImage = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+    });
+    if (result && result?.assets?.length > 0 && result?.assets?.[0]?.uri) {
+      const imageUrl = result?.assets?.[0]?.uri;
+      setData({
+        ...data,
+        backgroundColor: 'black',
+        backgroundImage: imageUrl,
+      });
+      setHistory([
+        ...history,
+        {
+          backgroundColor: 'black',
+          backgroundImage: imageUrl,
+        },
+      ]);
+    }
+  };
+
+  const loadAuthorImage = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+    });
+    if (result && result?.assets?.length > 0 && result?.assets?.[0]?.uri) {
+      const imageUrl = result?.assets?.[0]?.uri;
+      setAuthorDetails({
+        ...authorDetails,
+        authorImage: imageUrl,
+      });
+    }
+  };
+
+  React.useEffect(() => {
+    // LOADING FROM SETTINGS
+    if (!data?.authorName && settings?.authorName)
+      setData({
+        ...data,
+        authorName: settings?.authorName,
+        authorImage: settings?.authorImage,
+      });
+  }, []);
+
   return (
     <View className={`bg-black flex-1`}>
       <View className={`bg-zinc-900 px-4 flex-row items-center`}>
@@ -285,7 +316,7 @@ export default function Home({route, navigation}) {
       </View>
       <Modal
         onDismiss={() => {
-          setPicker(false);
+          setWatermark(!watermark);
         }}
         animationType="slide"
         visible={watermarkPicker}
@@ -297,7 +328,7 @@ export default function Home({route, navigation}) {
           }}>
           <TouchableOpacity
             onPress={() => {
-              setPicker(false);
+              setWatermark(!watermark);
             }}
             className={`flex-1`}
           />
@@ -362,7 +393,7 @@ export default function Home({route, navigation}) {
         <View className={`w-full justify-center px-3`}>
           <ViewShot
             ref={ref}
-            options={{fileName: 'Quote-Maker', format: 'jpg', quality: 0.9}}
+            options={{fileName: 'Quote-Maker', format: 'jpg', quality: 1.0}}
             className={`relative overflow-hidden flex rounded-md bg-zinc-900`}
             style={{
               backgroundColor: data.backgroundColor,
@@ -427,14 +458,35 @@ export default function Home({route, navigation}) {
                 </Text>
               </TouchableOpacity>
             )}
-
-            {data?.author ? (
-              <Text
-                style={{
-                  color: data?.quoteColor,
-                }}>
-                {'- ' + data?.author}
-              </Text>
+            {data?.authorName ? (
+              <TouchableOpacity
+                onPress={() => {
+                  setActiveEditor('AUTHOR');
+                }}
+                className={`mt-2 flex-row items-center`}>
+                {data?.authorImage ? (
+                  <Image
+                    className={`mr-2 h-8 aspect-square rounded-full`}
+                    source={{
+                      uri: data?.authorImage,
+                    }}
+                  />
+                ) : (
+                  <Text
+                    style={{
+                      color: data?.quoteColor,
+                    }}>
+                    {'- '}
+                  </Text>
+                )}
+                <Text
+                  style={{
+                    color: data?.quoteColor,
+                  }}
+                  className={`text-sm italic`}>
+                  {data?.authorName}
+                </Text>
+              </TouchableOpacity>
             ) : null}
           </ViewShot>
         </View>
@@ -481,14 +533,10 @@ export default function Home({route, navigation}) {
           </View>
         ) : activeEditor === 'FONT' ? (
           <View className={`border-b-2 mb-3 pb-3 border-zinc-600`}>
-            <ScrollView
-              contentContainerStyle={{
-                flex: 1,
-              }}
-              horizontal
-              showsHorizontalScrollIndicator={true}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {fonts?.map(each => (
                 <TouchableOpacity
+                  key={each.name}
                   onPress={() => {
                     setData({
                       ...data,
@@ -563,53 +611,67 @@ export default function Home({route, navigation}) {
               }}>
               <Icon color="white" name="close" size={30} />
             </TouchableOpacity>
-            <TouchableOpacity
-              className={`pr-2`}
-              onPress={() => {
-                setData({
-                  ...data,
-                  backgroundColor: 'black',
-                  backgroundImage: getRandomBackground(
-                    data?.backgroundImage ?? 'something',
-                  ),
-                });
-                setHistory([
-                  ...history,
-                  {
-                    backgroundColor: 'black',
-                    backgroundImage: getRandomBackground(
-                      data?.backgroundImage ?? 'something',
-                    ),
-                  },
-                ]);
-              }}>
-              <Icon color="white" name="file-image" size={45} />
-            </TouchableOpacity>
+
             <FlatList
+              showsHorizontalScrollIndicator={false}
               horizontal
-              renderItem={({item}) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    setData({
-                      ...data,
-                      backgroundImage: '',
-                      backgroundColor: item,
-                      lastUpdated: new Date(),
-                    });
-                    setHistory([
-                      ...history,
-                      {
-                        backgroundImage: '',
+              renderItem={({item}) => {
+                if (item?.type === 'RANDOM')
+                  return (
+                    <TouchableOpacity
+                      className={`pr-1`}
+                      onPress={() => {
+                        setData({
+                          ...data,
+                          backgroundColor: 'black',
+                          backgroundImage: getRandomBackground(
+                            data?.backgroundImage ?? 'something',
+                          ),
+                        });
+                        setHistory([
+                          ...history,
+                          {
+                            backgroundColor: 'black',
+                            backgroundImage: getRandomBackground(
+                              data?.backgroundImage ?? 'something',
+                            ),
+                          },
+                        ]);
+                      }}>
+                      <Icon color="white" name="dice-5" size={45} />
+                    </TouchableOpacity>
+                  );
+                if (item?.type === 'GALLERY')
+                  return (
+                    <TouchableOpacity className={`pr-1`} onPress={loadImage}>
+                      <Icon color="white" name="image" size={45} />
+                    </TouchableOpacity>
+                  );
+                if (!item?.type)
+                  return (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setData({
+                          ...data,
+                          backgroundImage: '',
+                          backgroundColor: item,
+                          lastUpdated: new Date(),
+                        });
+                        setHistory([
+                          ...history,
+                          {
+                            backgroundImage: '',
+                            backgroundColor: item,
+                          },
+                        ]);
+                      }}
+                      style={{
                         backgroundColor: item,
-                      },
-                    ]);
-                  }}
-                  style={{
-                    backgroundColor: item,
-                  }}
-                  className={` mr-2 p-5 border-2 border-white bg-zinc-900 rounded-md flex flex-col justify-center items-center`}></TouchableOpacity>
-              )}
-              data={colors}
+                      }}
+                      className={`mr-2 p-5 border-2 border-white bg-zinc-900 rounded-md flex flex-col justify-center items-center`}></TouchableOpacity>
+                  );
+              }}
+              data={[{type: 'RANDOM'}, {type: 'GALLERY'}, ...colors]}
             />
           </View>
         ) : activeEditor === 'RATIO' ? (
@@ -654,6 +716,112 @@ export default function Home({route, navigation}) {
             />
           </View>
         ) : null}
+        <Modal
+          onDismiss={() => {
+            setActiveEditor(false);
+          }}
+          animationType="slide"
+          visible={activeEditor === 'AUTHOR'}
+          transparent>
+          <View
+            className={`flex-1`}
+            style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            }}>
+            <TouchableOpacity
+              onPress={() => {
+                setAuthorPicker(false);
+              }}
+              className={`flex-1`}
+            />
+            <View className={`p-5 px-3 m-5 bg-zinc-800 rounded-lg`}>
+              <View className={`flex justify-center items-center`}>
+                <Icon color="white" name="pen" size={50} />
+                <Text
+                  className={`text-xl font-bold mt-4 text-center text-white mb-2`}>
+                  Author Details
+                </Text>
+                <Text
+                  className={`px-5 text-xs text-center opacity-75 text-white mb-5`}>
+                  Tell us the deails of the author and we will add the author
+                  details in the quoto
+                </Text>
+              </View>
+              <View
+                className={`px-4 py-1 mt-3 font-bold bg-black rounded-full items-center flex-row`}>
+                <TouchableOpacity onPress={loadAuthorImage}>
+                  {authorDetails.authorImage ? (
+                    <Image
+                      className={`aspect-square rounded-full h-10`}
+                      source={{
+                        uri: authorDetails.authorImage,
+                      }}
+                    />
+                  ) : (
+                    <Icon color="white" name="image-edit-outline" size={30} />
+                  )}
+                </TouchableOpacity>
+                <TextInput
+                  autoFocus
+                  onChangeText={e => {
+                    setAuthorDetails({
+                      ...authorDetails,
+                      authorName: e,
+                    });
+                  }}
+                  value={authorDetails.authorName}
+                  className={`py-2 px-2 font-bold flex-1`}
+                  placeholder="Author Name"
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setData({
+                    ...data,
+                    ...authorDetails,
+                  });
+                  setActiveEditor(false);
+                  setTimeout(() => {
+                    setAuthorDetails({
+                      ...authorDetails,
+                      authorName: '',
+                      authorImage: '',
+                    });
+                  }, 100);
+                }}
+                className={`mt-3 bg-black rounded-full items-center flex-row py-3 px-4`}>
+                <Icon color="white" name="check" size={20} />
+                <Text
+                  className={`flex-1 text-center ml-2 text-md font-bold text-white`}>
+                  Done
+                </Text>
+                <View className={`opacity-0`}>
+                  <Icon color="white" name="dice-3-outline" size={20} />
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setData({
+                    ...data,
+                    authorName: '',
+                    authorImage: '',
+                  });
+                  setActiveEditor(false);
+                  setData({
+                    ...data,
+                    authorName: '',
+                    authorImage: '',
+                  });
+                }}
+                className={`mt-4 rounded-full items-center flex-row py- px-4`}>
+                <Text
+                  className={`flex-1 text-center ml-2 text-xs font-bold text-white`}>
+                  Remove Author
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
         <ScrollView
           keyboardShouldPersistTaps="always"
           horizontal
@@ -664,6 +832,11 @@ export default function Home({route, navigation}) {
               onPress={() => {
                 if (activeEditor === each.editor) setActiveEditor(false);
                 else setActiveEditor(each.editor);
+                if (each.editor === 'AUTHOR')
+                  setAuthorDetails({
+                    authorName: data.authorName,
+                    authorImage: data?.authorImage,
+                  });
               }}
               className={`mr-3 flex flex-col justify-center items-center`}>
               <View

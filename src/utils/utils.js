@@ -77,14 +77,34 @@ export const COLORS = [
   '#3498DB', // Dodger Blue
 ];
 
-export const FONTS = [
-  'BEBAS',
-  'DANCING',
-  'OSWALD',
-  'PLAYFAIR',
-  'QUICKSAND',
-  'VIBES',
+export const FONT_NAMES = [
+  {
+    name: 'Bebas',
+    value: 'BEBAS',
+  },
+  {
+    name: 'Dancing',
+    value: 'DANCING',
+  },
+  {
+    name: 'Oswald',
+    value: 'OSWALD',
+  },
+  {
+    name: 'Playfair',
+    value: 'PLAYFAIR',
+  },
+  {
+    name: 'Quick Sand',
+    value: 'QUICKSAND',
+  },
+  {
+    name: 'Vibes',
+    value: 'VIBES',
+  },
 ];
+
+export const FONTS = FONT_NAMES?.map(each => each.name);
 
 export const QUOTES = [
   'The journey of a thousand miles begins with a single step.',
@@ -183,11 +203,6 @@ export const getRandomFont = () =>
 
 export const getRandomColors = () =>
   COLORS[Math.floor(Math.random() * COLORS.length)];
-
-export const SETTINGS = {
-  showWatermark: true,
-  openAppInCreateMode: false,
-};
 
 export const compareVersions = (versionA, versionB) => {
   const parsedVersionA = semver.parse(versionA);
