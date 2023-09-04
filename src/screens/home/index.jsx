@@ -25,6 +25,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Templates from '../temp';
 import Settings from '../settings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import constantUtils from '../../utils/constants';
 
 // {
 //   "id" : "aljsdlfjskldjf",
@@ -80,10 +81,16 @@ const Recent = ({navigation}) => {
   }, []);
 
   const askForReview = async () => {
-    if (InAppReview.isAvailable()) {
+    const ifReviewed = await AsyncStorage.getItem(constantUtils.isRated);
+
+    if (!ifReviewed && InAppReview.isAvailable()) {
       InAppReview.RequestInAppReview()
-        .then(hasFlowFinishedSuccessfully => {
+        .then(async hasFlowFinishedSuccessfully => {
           if (hasFlowFinishedSuccessfully) {
+            await AsyncStorage.setItem(
+              constantUtils.isRated,
+              JSON.stringify(true),
+            );
           }
         })
         .catch(error => {
@@ -93,16 +100,22 @@ const Recent = ({navigation}) => {
   };
 
   const updateAppOpenCount = async () => {
-    let storedCount = await AsyncStorage.getItem('appOpen');
+    let storedCount = await AsyncStorage.getItem(constantUtils.appOpen);
     if (!storedCount) {
       storedCount = 1;
-      await AsyncStorage.setItem('appOpen', JSON.stringify(1));
+      await AsyncStorage.setItem(constantUtils.appOpen, JSON.stringify(1));
     } else {
+      const count = JSON.parse(storedCount);
+      if (count > 2) askForReview();
+      await AsyncStorage.setItem(
+        constantUtils.appOpen,
+        JSON.stringify(count + 1),
+      );
     }
   };
 
   React.useEffect(() => {
-    askForReview();
+    updateAppOpenCount();
   }, []);
 
   return (

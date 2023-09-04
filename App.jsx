@@ -9,6 +9,7 @@ import messaging from '@react-native-firebase/messaging';
 import Home from './src/screens/home';
 import Create from './src/screens/create';
 import Settings from './src/screens/settings';
+import codePush from 'react-native-code-push';
 
 import {PermissionsAndroid} from 'react-native';
 import UpdateComponent from './src/components/UpdateComponent';
@@ -60,4 +61,7 @@ function App() {
   );
 }
 
-export default App;
+export default codePush({
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  installMode: codePush.InstallMode.ON_NEXT_RESTART,
+})(App);
