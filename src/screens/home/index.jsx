@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import React from 'react';
 import LottieView from 'lottie-react-native';
+import InAppReview from 'react-native-in-app-review';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -23,6 +24,7 @@ import messaging from '@react-native-firebase/messaging';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Templates from '../temp';
 import Settings from '../settings';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // {
 //   "id" : "aljsdlfjskldjf",
@@ -75,6 +77,32 @@ const Recent = ({navigation}) => {
 
   React.useEffect(() => {
     lottieRef.current?.play();
+  }, []);
+
+  const askForReview = async () => {
+    if (InAppReview.isAvailable()) {
+      InAppReview.RequestInAppReview()
+        .then(hasFlowFinishedSuccessfully => {
+          if (hasFlowFinishedSuccessfully) {
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  };
+
+  const updateAppOpenCount = async () => {
+    let storedCount = await AsyncStorage.getItem('appOpen');
+    if (!storedCount) {
+      storedCount = 1;
+      await AsyncStorage.setItem('appOpen', JSON.stringify(1));
+    } else {
+    }
+  };
+
+  React.useEffect(() => {
+    askForReview();
   }, []);
 
   return (

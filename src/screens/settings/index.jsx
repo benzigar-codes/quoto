@@ -30,6 +30,13 @@ export default function Settings({navigation}) {
     authorImage: '',
   });
 
+  const links = {
+    website: 'https://quoto.24code.in',
+    terms: 'https://quoto.24code.in/terms',
+    privacy: 'https://quoto.24code.in/privacy',
+    company: 'https://www.24code.in/',
+  };
+
   const clearAllRecentData = () => {
     Alert.alert(
       'Delete Confirmation',
