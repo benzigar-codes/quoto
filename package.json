@@ -9,6 +9,7 @@
     "start": "react-native start",
     "test": "jest",
     "build": "source ~/.bash_profile && cd ./android && ./gradlew assemblerelease && cp ./android/app/build/outputs/apk/release/app-release.apk ./output.apk",
+    "release": "source ~/.bash_profile && cd ./android && ./gradlew bundlerelease && cp ./android/app/build/outputs/apk/release/app-release.apk ./output.apk",
     "pushDev": "appcenter codepush release-react -a 24code.apps-gmail.com/Quoto -d dev-1",
     "pushLive": "appcenter codepush release-react -a 24code.apps-gmail.com/Quoto -d live-1"
   },

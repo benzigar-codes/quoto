@@ -27,16 +27,20 @@ function App() {
     console.log(token);
   };
 
-  React.useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      //  Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  const checkForUpdates = () => {
+    codePush.sync({
+      installMode: codePush.InstallMode.ON_NEXT_RESUME,
     });
+  };
 
+  React.useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {});
     return unsubscribe;
   }, []);
 
   React.useEffect(() => {
     enableAnalytics();
+    checkForUpdates();
     getToken();
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
@@ -61,7 +65,4 @@ function App() {
   );
 }
 
-export default codePush({
-  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
-  installMode: codePush.InstallMode.ON_NEXT_RESTART,
-})(App);
+export default codePush({checkFrequency: codePush.CheckFrequency.MANUAL})(App);

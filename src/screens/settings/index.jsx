@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useMMKVStorage} from 'react-native-mmkv-storage';
 import storage, {MY_FILES, SETTINGS} from '../../utils/storage';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import Share from 'react-native-share';
 
 // {
 //   "authorName" : "Benzigar"
@@ -31,6 +32,7 @@ export default function Settings({navigation}) {
   });
 
   const links = {
+    store: 'https://play.google.com/store/apps/details?id=com.tfcode.quoto',
     website: 'https://quoto.24code.in',
     terms: 'https://quoto.24code.in/terms',
     privacy: 'https://quoto.24code.in/privacy',
@@ -247,7 +249,7 @@ export default function Settings({navigation}) {
         <Text className={`mt-5 text-white font-bold text-xl`}>Other Links</Text>
         <TouchableOpacity
           onPress={() => {
-            Linking.openURL('mailto:24code.apps@gmail.com');
+            Linking.openURL(links.store);
           }}
           className={`mt-3 flex items-center flex-row justify-between`}>
           <View className={`flex flex-row items-center`}>
@@ -258,9 +260,13 @@ export default function Settings({navigation}) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            Linking.openURL(
-              'https://play.google.com/store/apps/details?id=com.tfcode.quoto',
-            );
+            Share.open({
+              message:
+                'Hai Friends, Found this amazing app in store that can convert my ideas 💡 into quote images. Install it now, bros !',
+              url:
+                links.website +
+                '?referrer=utm_source%3Dinvite%26utm_medium%3Dsettings',
+            });
           }}
           className={`mt-3 flex items-center flex-row justify-between`}>
           <View className={`flex flex-row items-center`}>
@@ -271,7 +277,7 @@ export default function Settings({navigation}) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            Linking.openURL('https://www.24code.in/p/terms');
+            Linking.openURL(links.terms);
           }}
           className={`mt-3 flex items-center flex-row justify-between`}>
           <View className={`flex flex-row items-center`}>
@@ -284,7 +290,7 @@ export default function Settings({navigation}) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            Linking.openURL('https://www.24code.in/p/privacy');
+            Linking.openURL(links.privacy);
           }}
           className={`mt-3 flex items-center flex-row justify-between`}>
           <View className={`flex flex-row items-center`}>
@@ -299,7 +305,7 @@ export default function Settings({navigation}) {
         </Text>
         <TouchableOpacity
           onPress={() => {
-            Linking.openURL('https://www.24code.in/');
+            Linking.openURL(links.website);
           }}
           className={`mt-3 flex items-center flex-row justify-between`}>
           <View className={`flex flex-row items-center`}>
@@ -333,7 +339,7 @@ export default function Settings({navigation}) {
       </ScrollView>
       <TouchableOpacity
         onPress={() => {
-          Linking.openURL('https://www.24code.in/');
+          Linking.openURL(links.company);
         }}>
         <Text className={`text-white text-center text-sm mb-2 font-bold`}>
           Made with ❤️ by 24code.in

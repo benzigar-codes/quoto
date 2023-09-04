@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Quoto</string>
+    <!-- STAGE -->
     <string moduleConfig="true" name="CodePushDeploymentKey">AJTUYekIjh1woNOCuCLNES02F4jpaAns9TrAq</string>
+    <!-- PRODUCTION -->
+    <!-- <string moduleConfig="true" name="CodePushDeploymentKey">WOIpyPeU0AMsGaXyiGSIRmp3l3MxV5t2bYU_5</string> -->
 </resources>

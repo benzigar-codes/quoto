@@ -286,12 +286,6 @@ export default function Home({navigation}) {
           <IconMaterial color="white" name="format-quote-close" size={40} />
           <Text className={`text-white font-bold text-lg`}>Quoto</Text>
         </View>
-        {/* <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('Settings');
-          }}>
-          <IconMaterial color="white" name="cog" size={25} />
-        </TouchableOpacity> */}
       </View>
       <Tab.Navigator
         screenOptions={{
